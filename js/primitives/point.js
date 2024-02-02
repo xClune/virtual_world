@@ -4,6 +4,11 @@ class Point {
         this.y = y;
     }
 
+    // returns true if point equals existing point.
+    equals(point) {
+        return this.x == point.x && this.y == point.y;
+    }
+
     draw(ctx, size = 8, color = "black") {
         const rad = size / 2;
         ctx.beginPath();
