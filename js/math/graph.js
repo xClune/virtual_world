@@ -24,6 +24,15 @@ class Graph {
         }
     }
 
+    removePoint(p) {
+        const segs = this.getSegmentsWithPoint(p);
+        for (const seg of segs) {
+            this.removeSegment(seg);
+        }
+        this.points.splice(this.points.indexOf(p), 1);
+    }
+
+
     // adds the new segment to list.
     addSegment(seg) {
         this.segments.push(seg);
@@ -36,12 +45,37 @@ class Graph {
 
     // if containsSegment() returns true this function returns false and doesnt create a new point. If containsSegment() did not return true, then the new point does not equal any existing and gets added through calling the addSegment() function.
     tryAddSegment(seg) {
-        if (!this.containsSegment(seg)) {
+        if (!this.containsSegment(seg) && !seg.p1.equals(seg.p2)) {
             this.addSegment(seg);
             return true;
         } else {
             return false;
         }
+    }
+
+
+    removeSegment(seg) {
+        this.segments.splice(this.segments.indexOf(seg), 1);
+    }
+
+    getSegmentsWithPoint(point) {
+        let segs = [];
+        for (const seg of this.segments) {
+            if (seg.includes(point)) {
+                segs.push(seg);
+            }
+        }    
+        return segs;
+    }
+
+    dispose() {
+        this.points.length = 0;
+        this.segments.length = 0;
+    }
+
+    updateCanvas() {
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        graph.draw(ctx);
     }
 
     draw(ctx) {
