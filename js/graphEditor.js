@@ -18,23 +18,20 @@ class GraphEditor {
             if (evt.button == 2) {// right click
                 if(this.hovered) {
                     this.#removePoint(this.hovered);
+                } else {
+                    this.selected = null;
                 }
             }
             if (evt.button == 0) {// left click
                 const mouse = new Point(evt.offsetX, evt.offsetY);
                 if (this.hovered) {
-                    if (this.selected) {
-                        this.graph.tryAddSegment(new Segment(this.selected, this.hovered));
-                    }
-                    this.selected = this.hovered;
+                    this.#select(this.hovered);
                     this.dragging = true;
                     return;
                 }
                 this.graph.addPoint(mouse);
                 // generates segment between last selected and new mouse click
-                if (this.selected) {
-                    this.graph.tryAddSegment(new Segment(this.selected, mouse));
-                }
+                this.#select(mouse);
                 this.selected = mouse;
                 this.hovered = mouse;
             }
@@ -50,6 +47,13 @@ class GraphEditor {
         // stops right click menu appearing
         this.canvas.addEventListener("contextmenu", (evt) => evt.preventDefault());
         this.canvas.addEventListener("mouseup", () => this.dragging = false);
+    }
+
+    #select(point) {
+        if (this.selected) {
+            this.graph.tryAddSegment(new Segment(this.selected, point));
+        }
+        this.selected = point;
     }
 
     #removePoint(point) {
