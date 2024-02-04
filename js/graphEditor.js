@@ -7,6 +7,7 @@ class GraphEditor {
 
         this.selected = null;
         this.hovered = null;
+        this.dragging = false;
 
         this.#addEventListeners();
     }
@@ -14,19 +15,42 @@ class GraphEditor {
 
     #addEventListeners() {
         this.canvas.addEventListener("mousedown", (evt) => {
-            const mouse = new Point(evt.offsetX, evt.offsetY);
-            this.hovered = getNearestPoint(mouse, this.graph.points, 12);
-            if (this.hovered) {
-                this.selected = this.hovered;
-                return;
+            if (evt.button == 2) {// right click
+                if(this.hovered) {
+                    this.#removePoint(this.hovered);
+                }
             }
-            this.graph.addPoint(mouse);
-            this.selected = mouse;
+            if (evt.button == 0) {// left click
+                const mouse = new Point(evt.offsetX, evt.offsetY);
+                if (this.hovered) {
+                    this.selected = this.hovered;
+                    this.dragging = true;
+                    return;
+                }
+                this.graph.addPoint(mouse);
+                this.selected = mouse;
+                this.hovered = mouse;
+            }
         });
         this.canvas.addEventListener("mousemove", (evt) => {
             const mouse = new Point(evt.offsetX, evt.offsetY);
             this.hovered = getNearestPoint(mouse, this.graph.points, 12);
+            if (this.dragging == true) {
+                this.selected.x = mouse.x;
+                this.selected.y = mouse.y;
+            }
         });
+        // stops right click menu appearing
+        this.canvas.addEventListener("contextmenu", (evt) => evt.preventDefault());
+        this.canvas.addEventListener("mouseup", () => this.dragging = false);
+    }
+
+    #removePoint(point) {
+        this.graph.removePoint(point);
+        this.hovered = null;
+        if (this.selected == point) {
+        this.selected = null;
+        };
     }
 
     display() {
