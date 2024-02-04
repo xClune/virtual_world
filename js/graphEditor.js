@@ -28,6 +28,10 @@ class GraphEditor {
                     return;
                 }
                 this.graph.addPoint(mouse);
+                // generates segment between last selected and new mouse click
+                if (this.selected) {
+                    this.graph.tryAddSegment(new Segment(this.selected, mouse));
+                }
                 this.selected = mouse;
                 this.hovered = mouse;
             }
