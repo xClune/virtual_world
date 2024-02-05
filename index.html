@@ -7,7 +7,10 @@
     <body>
         <h1>World Editor</h1>
         <canvas id="myCanvas"></canvas>
-        <div id="controls"></div>
+        <div id="controls">
+            <button onclick="dispose()">🗑️</button>
+            <button onclick="save()">💾</button>
+        </div>
         
         <script src="js/graphEditor.js"></script>
         <script src="js/viewport.js"></script>
@@ -25,34 +28,32 @@
             // create 2d canvas
             const ctx = myCanvas.getContext("2d");
 
-            const p1 = new Point(200, 200);
-            const p2 = new Point(500, 200);
-            const p3 = new Point(400, 400);
-            const p4 = new Point(100, 300);
-
-            const s1 = new Segment(p1, p2);
-            const s2 = new Segment(p1, p3);
-            const s3 = new Segment(p1, p4);
-            const s4 = new Segment(p2, p3);
-
-            // new graph using array of points and segments
-            const graph = new Graph([p1, p2, p3, p4],[s1, s2, s3, s4]);
+            const graphString = localStorage.getItem("graph");
+            const graphInfo = graphString ? JSON.parse(graphString) : null; 
+                
+            // if graphInfo exists (saved to localStorage, then retrieve, if not (false) then new graph is generated.
+            const graph = graphInfo
+            ? Graph.load(graphInfo)
+            : new Graph();
 
             const viewport = new Viewport(myCanvas);
-
             const graphEditor = new GraphEditor(viewport, graph);
 
             animate();
 
+            // recurring function animates graph 60 times per second. Anything required visually in real time needs to be called here.
             function animate() {
-                ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-                ctx.save();
-                ctx.scale(1 / viewport.zoom, 1 / viewport.zoom);
-                const offset = viewport.getOffset();
-                ctx.translate(offset.x, offset.y);
-                graphEditor.display();
-                ctx.restore();
+                viewport.reset();
+                graphEditor.display(); 
                 requestAnimationFrame(animate);
+            }
+
+            function dispose() {
+                graphEditor.dispose();
+            }
+
+            function save() {
+                localStorage.setItem("graph", JSON.stringify(graph));
             }
 
         </script>
