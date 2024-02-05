@@ -53,7 +53,6 @@ class Graph {
         }
     }
 
-
     removeSegment(seg) {
         this.segments.splice(this.segments.indexOf(seg), 1);
     }
