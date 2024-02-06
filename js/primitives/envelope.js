@@ -35,10 +35,9 @@ class Envelope {
 
         // generates polygon between 4 points above, creating an envelope around segment 'skeleton'
         return new Polygon(points);
-
     }
 
-    draw(ctx) {
-        this.poly.draw(ctx);
+    draw(ctx, options) {
+        this.poly.draw(ctx, options);
     }
 }
