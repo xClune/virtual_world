@@ -29,7 +29,7 @@ class Envelope {
         for (let i = alpha_ccw; i <= alpha_cw + eps; i += step) {
             points.push(translate(p1, i, radius));
         }
-        for (let i = alpha_ccw; i <= alpha_cw; i += step) {
+        for (let i = alpha_ccw; i <= alpha_cw + eps; i += step) {
             points.push(translate(p2, Math.PI + i, radius));
         }
 

@@ -12,6 +12,10 @@ class Graph {
         return new Graph(points, segments);
     }
 
+    hash() {
+        return JSON.stringify(this);
+    }
+
     // adds the new point to the list.
     addPoint(point) {
         this.points.push(point);
