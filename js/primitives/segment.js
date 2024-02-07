@@ -33,13 +33,13 @@ class Segment {
         }
 
     projectPoint(point) {
-        const a = subtract(point, this.p1);
-        const b = subtract(this.p2, this.p1);
-        const normB = normalize(b);
-        const scaler = dot(a, normB);
+        const a = subtract(point, this.p1); //vector
+        const b = subtract(this.p2, this.p1); //vector p1-p2
+        const normB = normalize(b); // unit vector dir p1-p2
+        const scaler = dot(a, normB); // along p1-p2
         const proj = {
-            point: add(this.p1, scale(normB, scaler)), 
-            offset: scaler / magnitude(b),
+            point: add(this.p1, scale(normB, scaler)), // point in reference to segment p1-p2
+            offset: scaler / magnitude(b), // p1 @ 0, p2 @ 1
         }
         return proj;
     }

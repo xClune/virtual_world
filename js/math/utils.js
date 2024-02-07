@@ -19,7 +19,7 @@ function average(p1, p2) {
     return new Point((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
 }
 
-function dot(p1, p2) {
+function dot(p1, p2) { // dot product
     return p1.x * p2.x + p1.y * p2.y;
  }
 
@@ -31,11 +31,11 @@ function subtract(p1, p2) {
     return new Point(p1.x - p2.x, p1.y - p2.y);
 }
 
-function scale(p, scaler) {
+function scale(p, scaler) {// scales vector maintaining direction
     return new Point(p.x * scaler, p.y * scaler);
 }
 
-function normalize(p) {
+function normalize(p) { // creates a unit vector in same direction
     return scale(p, 1/ magnitude(p));
 }
 
