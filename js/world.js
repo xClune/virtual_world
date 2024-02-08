@@ -181,7 +181,8 @@ class World {
          // need furtherest items drawn first
          items.sort(
             (a, b) => b.base.distanceToPoint(viewPoint) - a.base.distanceToPoint(viewPoint)
-         )
+         );
+
          for (const item of items) {
             item.draw(ctx, viewPoint);
          }
