@@ -60,9 +60,8 @@ class Graph {
         if (!this.containsSegment(seg) && !seg.p1.equals(seg.p2)) {
             this.addSegment(seg);
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     removeSegment(seg) {
@@ -70,7 +69,7 @@ class Graph {
     }
 
     getSegmentsWithPoint(point) {
-        let segs = [];
+        const segs = [];
         for (const seg of this.segments) {
             if (seg.includes(point)) {
                 segs.push(seg);
