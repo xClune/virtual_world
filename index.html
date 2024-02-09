@@ -10,11 +10,16 @@
         <div id="controls">
             <button onclick="dispose()">🗑️</button>
             <button onclick="save()">💾</button>
+            &nbsp;
+            <button id="graphBtn" onclick="setMode('graph')">🌐</button>
+            <button id="stopBtn" onclick="setMode('stop')">🛑</button>
         </div>
-        
+
         <script src="js/world.js"></script>
-        <script src="js/graphEditor.js"></script>
         <script src="js/viewport.js"></script>
+        <script src="js/markings/stop.js"></script>
+        <script src="js/editors/graphEditor.js"></script>
+        <script src="js/editors/stopEditor.js"></script>
         <script src="js/items/tree.js"></script>
         <script src="js/items/building.js"></script>
         <script src="js/math/graph.js"></script>
@@ -24,8 +29,7 @@
         <script src="js/primitives/polygon.js"></script>
         <script src="js/primitives/envelope.js"></script>
         
-        <script>
-            
+        <script>            
 
             // change size of canvas
             myCanvas.width = 600;
@@ -45,8 +49,12 @@
 
             const viewport = new Viewport(myCanvas);
             const graphEditor = new GraphEditor(viewport, graph);
+            const stopEditor = new StopEditor(viewport, world);
 
             let oldGraphHash = graph.hash();
+
+            // set mode to graph
+            setMode("graph");
 
             animate();
 
@@ -61,6 +69,7 @@
                 world.draw(ctx, viewPoint);
                 ctx.globalAlpha = 0.3;
                 graphEditor.display(); 
+                stopEditor.display();
                 requestAnimationFrame(animate);
             }
 
@@ -72,6 +81,32 @@
                 localStorage.setItem("graph", JSON.stringify(graph));
             }
             
+
+            function setMode(mode) {
+                disableEditors();
+                switch (mode) {
+                    case "graph":
+                        graphBtn.style.backgroundColor = "white";
+                        graphBtn.style.filter = "";
+                        graphEditor.enable();
+                        break;
+                    case "stop":
+                        stopBtn.style.backgroundColor = "white";
+                        stopBtn.style.filter = "";
+                        stopEditor.enable();
+                        break;
+                }
+            }
+
+            function disableEditors() {
+                graphBtn.style.backgroundColor = "gray";
+                graphBtn.style.filter = "grayscale(100%)";
+                graphEditor.disable();
+                stopBtn.style.backgroundColor = "gray";
+                stopBtn.style.filter = "grayscale(100%)";
+                stopEditor.disable();
+
+            }
         </script>
     </body>
 </html>
