@@ -23,6 +23,8 @@ class World {
 
         this.markings = [];
 
+        this.frameCount = 0;
+
         this.generate();
     }
 
@@ -185,9 +187,74 @@ class World {
         return bases.map((b) => new Building(b));      
     }
 
+    #getIntersections() {
+        const subset = [];
+        for (const point of this.graph.points) {
+           let degree = 0;
+           for (const seg of this.graph.segments) {
+              if (seg.includes(point)) {
+                 degree++;
+              }
+           }
+  
+           if (degree >= 2) {
+              subset.push(point);
+           }
+        }
+        return subset;
+     }
+
+     #updateLights() {
+        const lights = this.markings.filter((m) => m instanceof Light);
+        const controlCenters = [];
+        for (const light of lights) {
+           const point = getNearestPoint(light.center, this.#getIntersections());
+           let controlCenter = controlCenters.find((c) => c.equals(point));
+           if (!controlCenter) {
+              controlCenter = new Point(point.x, point.y);
+              controlCenter.lights = [light];
+              controlCenters.push(controlCenter);
+           } else {
+              controlCenter.lights.push(light);
+           }
+        }
+        const greenDuration = 2,
+           yellowDuration = 1;
+        for (const center of controlCenters) {
+           center.ticks = center.lights.length * (greenDuration + yellowDuration);
+        }
+        const tick = Math.floor(this.frameCount / 60);
+        // tick is the number of seconds since the start of the simulation
+        for (const center of controlCenters) {
+           const cTick = tick % center.ticks;
+           // creates a number between 0 and center.ticks
+           const greenYellowIndex = Math.floor(
+              cTick / (greenDuration + yellowDuration)
+           );
+           // when cTick is between 0 and greenDuration, the light is green
+           // when cTick is between greenDuration and greenDuration + yellowDuration, the light is yellow
+           const greenYellowState =
+              cTick % (greenDuration + yellowDuration) < greenDuration
+                 ? "green"
+                 : "yellow";
+           for (let i = 0; i < center.lights.length; i++) {
+              if (i == greenYellowIndex) {
+                 center.lights[i].state = greenYellowState;
+              } else {
+                 center.lights[i].state = "red";
+              }
+              // by looping through individual centers of controlCenter, we ensure that green and yellow lights are not on at the same time.
+           }
+        }
+        this.frameCount++;
+     }
+
     
 
     draw(ctx, viewPoint) {
+
+        this.#updateLights();
+
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
          }
